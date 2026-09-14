@@ -1,0 +1,8 @@
+# Static-asset Worker. Nothing runs server-side — Cloudflare serves ./dist
+# directly, and unknown paths fall back to index.html so deep links work.
+name = "tariqwp-portfolio"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
