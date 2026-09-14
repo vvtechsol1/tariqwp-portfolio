@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tariq — Full-Stack Developer | React, Next.js, SaaS & AI</title>
+    <meta
+      name="description"
+      content="I build the complete product — React and Next.js interfaces, backend APIs, databases, authentication, payments, dashboards, integrations, deployment and AI features. 20+ production web applications."
+    />
+    <meta name="theme-color" content="#EFF6FF" />
+    <link rel="icon" type="image/x-icon" href="./deco/favicon.ico" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700;800;900&family=Urbanist:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Tariq — Full-Stack Developer | React, Next.js, SaaS & AI" />
+    <meta
+      property="og:description"
+      content="SaaS platforms, AI-powered applications, client portals and admin dashboards — built to run in production."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script>
+      // Set the theme before first paint so there is no flash of the wrong shell.
+      (function () {
+        try {
+          var saved = localStorage.getItem('tq-theme')
+          var theme =
+            saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          document.documentElement.setAttribute('data-theme', theme)
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light')
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

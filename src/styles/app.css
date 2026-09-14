@@ -1,0 +1,1151 @@
+/* =========================================================================
+   Layered on top of the credesign reference stylesheets.
+   1. Fills in the tokens the reference hardcoded (now rewritten to var()s)
+   2. Adds the dark theme by flipping those tokens
+   3. Styles the pieces that replaced jQuery plugins (carousel, modal, drawer,
+      preloader, progress bars) so they match the reference's look
+   ========================================================================= */
+
+/* ---------- 1. light tokens — blue & white ----------
+   `--orange-color` is the reference stylesheet's accent variable and it is used
+   in ~100 places, so the blue is set here rather than renaming it everywhere.
+   `--accent-2` is the lighter end of every gradient. */
+:root {
+  --orange-color: #1E62F0;
+  /* channels for the rgba() alphas the reference stylesheet uses */
+  --accent-rgb: 30, 98, 240;
+  --accent-2: #5FA0FF;
+  --accent-deep: #0B3FAE;
+
+  --surface-color: #ffffff;
+  --soft-line: #D8E6FF;
+  --soft-fill: #E6F0FF;
+  --tint-color: #EEF5FF;
+  --divider-color: #DCE6F5;
+  --track-color: #E6F0FF;
+  --body-color: #ffffff;
+  --shadow-color: rgba(16, 38, 80, 0.1);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --grad-soft: linear-gradient(160deg, #ffffff 0%, #EFF6FF 46%, #DCEAFF 100%);
+  --grad-accent: linear-gradient(135deg, var(--accent-deep), var(--orange-color) 45%, var(--accent-2));
+  color-scheme: light;
+}
+
+/* ---------- 2. dark theme ---------- */
+[data-theme='dark'] {
+  --orange-color: #4D8DFF;
+  --accent-rgb: 77, 141, 255;
+  --accent-2: #8FBBFF;
+  --accent-deep: #1E62F0;
+
+  --black-color: #E9EFF8;
+  --secondary-black-color: #9AA7BC;
+  --light-color: #0A0F1A;
+  --surface-color: #121A28;
+  --soft-line: rgba(77, 141, 255, 0.26);
+  --soft-fill: rgba(77, 141, 255, 0.14);
+  --tint-color: #0E1626;
+  --divider-color: rgba(255, 255, 255, 0.12);
+  --track-color: rgba(77, 141, 255, 0.18);
+  --body-color: #0A0F1A;
+  --shadow-color: rgba(0, 0, 0, 0.6);
+
+  --grad-soft: linear-gradient(160deg, #0A0F1A 0%, #0E1728 50%, #132038 100%);
+  color-scheme: dark;
+}
+
+html,
+body {
+  background-color: var(--body-color);
+}
+
+body {
+  transition: background-color 0.45s var(--ease), color 0.45s var(--ease);
+}
+
+body.is-locked {
+  overflow: hidden;
+}
+
+/* The reference draws several surfaces as plain white images/blocks; in dark mode
+   the decorative PNG circles and dot need toning down rather than hiding. */
+[data-theme='dark'] .home-two-banner-circle,
+[data-theme='dark'] .home-two-about-bg-circle {
+  opacity: 0.35;
+  filter: saturate(1.2);
+}
+
+[data-theme='dark'] .service-item-img,
+[data-theme='dark'] .sub-heading img {
+  filter: brightness(1.15);
+}
+
+[data-theme='dark'] .partner-img {
+  filter: invert(1) grayscale(1) brightness(1.6);
+  opacity: 0.55;
+}
+
+/* ---------- 3a. preloader ---------- */
+.tq-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--light-color);
+  display: grid;
+  place-items: center;
+}
+
+.tq-preloader__inner {
+  width: min(380px, 74vw);
+  text-align: center;
+}
+
+.tq-preloader__name {
+  font-family: 'Jost', sans-serif;
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  font-weight: 700;
+  color: var(--black-color);
+  letter-spacing: -0.02em;
+}
+
+.tq-preloader__bar {
+  margin-top: 20px;
+  height: 3px;
+  border-radius: 15px;
+  background: var(--track-color);
+  overflow: hidden;
+}
+
+.tq-preloader__fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: var(--orange-color);
+}
+
+.tq-preloader__pct {
+  margin-top: 12px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--secondary-black-color);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 3b. sidebar extras: theme toggle + active link ---------- */
+.tq-theme-toggle {
+  margin-top: 40px;
+  width: 54px;
+  height: 29px;
+  border-radius: 100px;
+  border: 1px solid var(--soft-line);
+  background: var(--surface-color);
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.tq-theme-toggle__knob {
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: var(--orange-color);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  transition: transform 0.45s var(--ease);
+}
+
+[data-theme='dark'] .tq-theme-toggle__knob {
+  transform: translateX(25px);
+}
+
+.tq-theme-toggle svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---------- the left rail as a scroll stepper ----------
+   The reference's onepageNav plugin fills only the active capsule. Here the
+   connecting line also fills as you scroll and every step already passed stays
+   orange, so the rail reads as a progress stepper. For the reference's exact
+   behaviour (active capsule only), delete the `.is-done` rule below. */
+#onepage-nav li a.scroll::before {
+  z-index: 2;
+  transition: background-color 0.35s var(--ease), border-color 0.35s var(--ease),
+    transform 0.35s var(--ease);
+}
+
+#onepage-nav li a.scroll.is-done::before {
+  background-color: var(--orange-color);
+  border-color: var(--orange-color);
+}
+
+/* `.active` is already filled orange by the reference stylesheet.
+   Do NOT widen it or add a halo: the capsule sits at `left: -25px` and is 20px
+   wide, so it ends 5px short of the label. Any extra width or spread runs under
+   the first letter and hides it. The current step is distinguished by scale
+   instead, which grows around its own centre and stays clear of the text. */
+#onepage-nav li a.scroll.active::before {
+  transform: translateY(-50%) scale(1.12);
+}
+
+.tq-rail {
+  position: absolute;
+  left: 0;
+  /* spans first marker centre to last: half a link's line-box down from the top,
+     and one li's bottom padding plus that same half up from the bottom */
+  top: 12px;
+  bottom: 40px;
+  width: 1px;
+  z-index: 0;
+}
+
+.tq-rail::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: var(--rail, 0%);
+  background-color: var(--orange-color);
+  transition: height 0.35s var(--ease);
+}
+
+/* ---------- 3c. mobile header + drawer (replaces meanmenu) ---------- */
+.tq-mobile-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  background: color-mix(in srgb, var(--light-color) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--soft-line);
+}
+
+.tq-logo {
+  font-family: 'Jost', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--black-color);
+}
+
+.tq-burger {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--soft-line);
+  background: var(--surface-color);
+  display: grid;
+  place-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.tq-burger span {
+  display: block;
+  width: 17px;
+  height: 1.6px;
+  background: var(--black-color);
+  transition: transform 0.4s var(--ease), opacity 0.3s var(--ease);
+}
+
+.tq-burger.is-open span:nth-child(1) {
+  transform: translateY(3.3px) rotate(45deg);
+}
+
+.tq-burger.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.tq-burger.is-open span:nth-child(3) {
+  transform: translateY(-3.3px) rotate(-45deg);
+}
+
+.tq-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 940;
+  background: var(--light-color);
+  padding: 92px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.6s var(--ease);
+  pointer-events: none;
+}
+
+.tq-drawer.is-open {
+  clip-path: inset(0 0 0 0);
+  pointer-events: auto;
+}
+
+.tq-drawer a {
+  font-family: 'Jost', sans-serif;
+  font-size: clamp(1.7rem, 8vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--black-color);
+  padding-block: 9px;
+  border-bottom: 1px solid var(--divider-color);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), color 0.3s var(--ease);
+}
+
+.tq-drawer.is-open a {
+  opacity: 1;
+  transform: none;
+}
+
+.tq-drawer a:hover {
+  color: var(--orange-color);
+}
+
+@media (min-width: 1200px) {
+  .tq-mobile-bar,
+  .tq-drawer {
+    display: none;
+  }
+}
+
+/* ---------- 3d. skill bars (replaces jquery.lineProgressbar) ---------- */
+.tq-progress {
+  width: 100%;
+  height: 10px;
+  border-radius: 15px;
+  background-color: var(--track-color);
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.tq-progress__fill {
+  height: 100%;
+  width: 0;
+  border-radius: 15px;
+  background-color: var(--orange-color);
+}
+
+.tq-progress__count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--orange-color);
+  font-variant-numeric: tabular-nums;
+  flex: 0 0 auto;
+}
+
+.skill-progressbar-container {
+  margin-bottom: 35px;
+}
+
+/* ---------- 3e. portfolio grid + case-study modal ---------- */
+.portfolio-massonary-two-items {
+  cursor: pointer;
+}
+
+.tq-card-btn {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  border: 0;
+  background: none;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
+.portfolio-massonary-two-items:has(.tq-card-btn:focus-visible) {
+  outline: 2px solid var(--orange-color);
+  outline-offset: 4px;
+}
+
+.tq-tag {
+  display: inline-block;
+  padding: 5px 12px;
+  margin: 0 6px 6px 0;
+  border-radius: 100px;
+  border: 1px solid var(--soft-line);
+  background: var(--tint-color);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--secondary-black-color);
+}
+
+.tq-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: end center;
+}
+
+.tq-modal__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 8, 6, 0.7);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+}
+
+.tq-modal__panel {
+  position: relative;
+  width: min(1120px, 100%);
+  height: min(94svh, 100%);
+  background: var(--body-color);
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+}
+
+.tq-modal__bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 26px;
+  border-bottom: 1px solid var(--divider-color);
+  background: var(--light-color);
+}
+
+.tq-modal__bar h3 {
+  font-family: 'Jost', sans-serif;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-weight: 700;
+  color: var(--black-color);
+  margin: 0;
+}
+
+.tq-modal__close {
+  margin-left: auto;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid var(--soft-line);
+  background: var(--surface-color);
+  color: var(--black-color);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.35s var(--ease);
+}
+
+.tq-modal__close:hover {
+  background: var(--orange-color);
+  border-color: var(--orange-color);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.tq-modal__scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 30px 26px 60px;
+}
+
+.tq-modal__cover {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--soft-line);
+  margin-bottom: 32px;
+}
+
+.tq-modal__cover img,
+.tq-shot img {
+  width: 100%;
+  display: block;
+}
+
+.tq-aside {
+  border: 1px solid var(--soft-line);
+  border-radius: 14px;
+  background: var(--surface-color);
+  padding: 22px;
+}
+
+.tq-aside h5 {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--secondary-black-color);
+  margin-bottom: 12px;
+}
+
+.tq-aside + .tq-aside {
+  margin-top: 18px;
+}
+
+.tq-hi {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tq-hi li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 10px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--secondary-black-color);
+}
+
+.tq-hi li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange-color);
+}
+
+.tq-shot {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--soft-line);
+  margin-top: 18px;
+}
+
+/* ---------- 3f. testimonial / partner carousels (replaces owl) ---------- */
+.tq-carousel {
+  overflow: hidden;
+}
+
+.tq-carousel__track {
+  display: flex;
+  transition: transform 0.7s var(--ease);
+}
+
+.tq-carousel__cell {
+  flex: 0 0 100%;
+  padding-inline: 10px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .tq-carousel__cell {
+    flex-basis: 50%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .tq-carousel__cell {
+    flex-basis: 33.3333%;
+  }
+}
+
+.tq-dots {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 34px;
+}
+
+.tq-dots button {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--divider-color);
+  cursor: pointer;
+  transition: all 0.35s var(--ease);
+}
+
+.tq-dots button.is-on {
+  width: 26px;
+  border-radius: 100px;
+  background: var(--orange-color);
+}
+
+/* tech strip standing in for the reference's client-logo carousel */
+.tq-marquee {
+  overflow: hidden;
+}
+
+.tq-marquee__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.tq-marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 38px;
+  padding-right: 38px;
+  font-family: 'Jost', sans-serif;
+  font-size: clamp(1.05rem, 2vw, 1.6rem);
+  font-weight: 600;
+  color: var(--secondary-black-color);
+  white-space: nowrap;
+}
+
+.tq-marquee__item::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange-color);
+  flex: 0 0 auto;
+}
+
+/* ---------- 3g. small shared bits ---------- */
+.tq-live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2fbf71;
+  margin-right: 8px;
+}
+
+.tq-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 800;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--orange-color);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(14px) scale(0.85);
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+  box-shadow: 0 14px 30px -12px rgba(255, 107, 0, 0.7);
+}
+
+.tq-to-top.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.tq-reveal {
+  opacity: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--orange-color);
+  outline-offset: 3px;
+}
+
+/* the reference sets a fixed sidebar; give the mobile layout room for the bar */
+@media (max-width: 1199.98px) {
+  .home-two-banner {
+    padding-top: 110px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .tq-reveal {
+    opacity: 1;
+  }
+}
+
+/* ---------- 4. sidebar fits shorter screens ----------
+   The reference spaces the rail with two 220px gaps, which only just fits a tall
+   viewport — and this build adds a theme toggle. Compress the gaps when there is
+   less height to work with so nothing falls off the bottom. */
+.sidebar-header > .position-relative {
+  max-height: 100vh;
+}
+
+@media (max-height: 940px) {
+  .sidebar-navigation {
+    margin-top: 130px;
+  }
+
+  .sidebar-social-media {
+    margin-top: 100px;
+  }
+}
+
+@media (max-height: 780px) {
+  .sidebar-header.mt-55 {
+    margin-top: 26px !important;
+  }
+
+  .sidebar-navigation {
+    margin-top: 70px;
+  }
+
+  .sidebar-social-media {
+    margin-top: 60px;
+  }
+
+  .sidebar-menu-item {
+    padding-bottom: 18px;
+  }
+
+  .tq-theme-toggle {
+    margin-top: 24px;
+  }
+}
+
+/* ---------- 5. hero rhythm with the credentials row ----------
+   The reference hero runs sub-heading → h1 → 85px gap → paragraph → button.
+   This build adds a badge row, which pushed the CTA below the fold on a 1440x800
+   laptop, so the gap is tightened and the chips kept compact. Desktop only —
+   responsive.css already sets its own spacing below lg. */
+@media (min-width: 992px) {
+  .home-two-banner .home-two-banner-texts {
+    margin-top: 46px;
+  }
+}
+
+/* Flex-wrap, not a fixed two-column grid: the text block is offset 95px to the
+   right, so a `max-content` second column runs straight off the edge and the
+   chips get clipped. Wrapping lets each row take as many as actually fit. */
+.tq-badges {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tq-badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 6px 13px;
+  border-radius: 100px;
+  border: 1px solid var(--soft-line);
+  background: var(--surface-color);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--secondary-black-color);
+}
+
+
+
+/* Sit the theme switch with the social icons rather than orphaned beneath them. */
+.sidebar-social-media .social-container {
+  gap: 4px;
+}
+
+.sidebar-social-media .tq-theme-toggle {
+  margin-top: 22px;
+}
+
+/* ---------- 6. portraits stay round ----------
+   The reference art is a tall cut-out of a person, so it hard-codes
+   `.about-two-img { width: 575px; height: 715px }`. The supplied photo is a
+   circular crop, and that box squashes it into an ellipse. Lock both portraits
+   to a square and let the circle be a circle at every breakpoint. */
+.about-two-img,
+.home-banner-img {
+  aspect-ratio: 1 / 1;
+  height: auto;
+  object-fit: cover;
+}
+
+/* ---------- 7. service icons ----------
+   The reference ships four icon PNGs with the tinted square baked in. There are
+   eight services here, so the square is drawn in CSS and the glyph is an inline
+   SVG — one consistent set, and it follows the theme. */
+.tq-service-ico {
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 25px;
+  border-radius: 6px;
+  background: var(--tint-color);
+  border: 1px solid var(--soft-line);
+  color: var(--orange-color);
+}
+
+/* the card tints on hover, so lift the icon square off it */
+.service-grid-item:hover .tq-service-ico {
+  background: var(--surface-color);
+}
+
+/* ---------- 8. portfolio cards that line up ----------
+   26 cards of varying title and blurb length made the rows ragged. Each card is
+   a flex column with the title clamped to one line, the blurb to two, and the
+   chips pushed to the bottom — so every row lands on the same baselines. */
+.portfolio-massonary-two-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.tq-pbody {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+  padding: 15px 10px 0;
+}
+
+.tq-pmeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13.5px;
+}
+
+.tq-stage {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--orange-color);
+}
+
+.tq-clamp-1,
+.tq-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+
+.tq-clamp-1 {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+.tq-clamp-2 {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  /* reserve both lines so one-line blurbs do not shorten their card */
+  min-height: 3.4em;
+}
+
+.tq-pchips {
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+/* filter counts */
+.tq-count {
+  margin-left: 6px;
+  font-size: 11.5px;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+
+/* cover stand-in for a project with no screenshot yet */
+.tq-cover-fallback {
+  width: 100%;
+  height: 340px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--soft-fill), var(--tint-color));
+  border: 1px solid var(--soft-line);
+  font-family: 'Jost', sans-serif;
+  font-size: 76px;
+  font-weight: 800;
+  color: var(--orange-color);
+}
+
+/* =========================================================================
+   9. Blue & white gradient treatment
+   The reference paints flat orange fills. This variant keeps the same layout
+   and spacing and swaps those fills for a blue gradient, with the soft
+   white→blue wash carried across the hero, footer and section tints.
+   ========================================================================= */
+
+/* hero and footer wash */
+.home-two-banner,
+.footer-two-top,
+.tq-preloader,
+.tq-drawer {
+  background: var(--grad-soft);
+}
+
+/* the decorative PNG circles were drawn in peach — tint them blue */
+.home-two-banner-circle,
+.home-two-about-bg-circle,
+.sub-heading img,
+.service-item-img {
+  filter: hue-rotate(190deg) saturate(1.15);
+}
+
+[data-theme='dark'] .home-two-banner-circle,
+[data-theme='dark'] .home-two-about-bg-circle {
+  filter: hue-rotate(190deg) saturate(1.2);
+  opacity: 0.4;
+}
+
+/* buttons: gradient fill instead of the flat accent */
+.orange-btn,
+.footer-form-btn,
+.tq-to-top {
+  background-image: var(--grad-accent);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.tq-to-top {
+  box-shadow: 0 14px 30px -12px rgba(30, 98, 240, 0.7);
+}
+
+/* the hover sweep sits above the gradient, so give it a colour of its own */
+.btn_effect::after,
+.btn_effect::before {
+  background-color: var(--accent-deep);
+}
+
+/* progress + rail fills */
+.tq-progress__fill,
+.tq-preloader__fill,
+.tq-rail::after {
+  background-color: transparent;
+  background-image: var(--grad-accent);
+}
+
+/* nav capsules and the theme knob */
+#onepage-nav li a.scroll.active::before,
+#onepage-nav li a.scroll.is-done::before,
+.tq-theme-toggle__knob {
+  background-image: var(--grad-accent);
+  background-color: transparent;
+}
+
+/* icon squares get a soft wash rather than a flat tint */
+.tq-service-ico,
+.light-orange-bg-icon {
+  background-image: linear-gradient(140deg, var(--soft-fill), var(--surface-color));
+}
+
+/* card hover lift reads better on blue */
+.service-grid-item:hover,
+.testimonial-card:hover {
+  box-shadow: 0 22px 44px -26px var(--shadow-color);
+}
+
+/* ---------- 10. "How I work" steps ---------- */
+.tq-step {
+  border: 1px solid var(--soft-line);
+  border-radius: 6px;
+  background: var(--surface-color);
+  padding: 26px 22px;
+  transition: transform 0.45s var(--ease), border-color 0.35s var(--ease);
+}
+
+.tq-step:hover {
+  transform: translateY(-5px);
+  border-color: var(--orange-color);
+}
+
+.tq-step__n {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-image: var(--grad-accent, none);
+  background-color: var(--orange-color);
+  color: #fff;
+  font-family: 'Jost', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* ---------- 11. covers must not stretch ----------
+   The reference hard-codes `.portfolio-massonary-two-items img { height: 340px }`
+   with no object-fit, so the browser default (`fill`) squashed every screenshot
+   to the box — the wide first card was rendering a 4:3 image at 2.5:1. Cover it
+   instead, anchored to the top so the page header stays visible. */
+.portfolio-massonary-two-items img,
+.portfolio-massonary-four-items img {
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* =========================================================================
+   12. Compact service cards
+   Sixteen services at the reference's 50px padding made the section enormous.
+   These are about half the height: smaller icon, clamped copy, a single tag
+   row, and a gradient edge that lights up on hover.
+   ========================================================================= */
+.service-grid-container {
+  grid-gap: 16px;
+}
+
+.service-grid-item.tq-svc {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 22px 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.45s var(--ease), border-color 0.4s var(--ease),
+    box-shadow 0.45s var(--ease);
+}
+
+/* gradient wash that fades in behind the card */
+.tq-svc::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(150deg, var(--soft-fill), transparent 62%);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+
+.service-grid-item.tq-svc:hover {
+  transform: translateY(-6px);
+  border-color: var(--orange-color);
+  box-shadow: 0 20px 38px -24px var(--shadow-color);
+  background-color: var(--surface-color);
+}
+
+.tq-svc:hover::before {
+  opacity: 1;
+}
+
+/* step number, top-right */
+.tq-svc__num {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--soft-line);
+  transition: color 0.4s var(--ease);
+}
+
+.tq-svc:hover .tq-svc__num {
+  color: var(--orange-color);
+}
+
+/* icon: half the reference size, fills with the gradient on hover */
+.tq-svc__ico {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  background: var(--tint-color);
+  border: 1px solid var(--soft-line);
+  color: var(--orange-color);
+  transition: background 0.4s var(--ease), color 0.4s var(--ease),
+    transform 0.5s var(--ease);
+}
+
+.tq-svc__ico svg {
+  width: 24px;
+  height: 24px;
+}
+
+.tq-svc:hover .tq-svc__ico {
+  background-image: var(--grad-accent);
+  background-color: var(--orange-color);
+  border-color: transparent;
+  color: #fff;
+  transform: rotate(-6deg) scale(1.06);
+}
+
+.tq-svc__title {
+  font-family: 'Jost', sans-serif;
+  font-size: 17.5px;
+  font-weight: 600;
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  margin: 0 0 7px;
+  padding-right: 26px;
+  transition: color 0.35s var(--ease);
+}
+
+.tq-svc:hover .tq-svc__title {
+  color: var(--orange-color);
+}
+
+.tq-svc__body {
+  font-size: 14px;
+  line-height: 1.62;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Tags must never shrink into "Custom Them…" — they read as broken. They keep
+   their natural width and wrap instead, and the arrow sits out of the flow. */
+.tq-svc__tags {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-right: 24px;
+}
+
+.tq-svc .tq-tag {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.tq-svc__arrow {
+  position: absolute;
+  right: 20px;
+  bottom: 22px;
+  color: var(--orange-color);
+  opacity: 0;
+  transform: translate(-5px, 5px);
+  transition: opacity 0.4s var(--ease), transform 0.45s var(--ease);
+}
+
+.tq-svc:hover .tq-svc__arrow {
+  opacity: 1;
+  transform: none;
+}
+
+/* two per row on tablet, one on phone — the reference breakpoints already do
+   this for the container; these just keep the copy readable at those widths */
+@media (max-width: 767.98px) {
+  .service-grid-item.tq-svc {
+    padding: 22px 20px 18px;
+  }
+
+  .tq-svc__body {
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
+}
