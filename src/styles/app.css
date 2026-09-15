@@ -406,7 +406,11 @@ body.is-locked {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transform: translateY(100%);
+  /* No baseline transform here on purpose. GSAP animates `yPercent` on this
+     element, and it treats an existing CSS translate as the starting offset —
+     a `translateY(100%)` here made the panel animate 200% -> 100% and never
+     reach the viewport. The open timeline sets yPercent 100 before first paint,
+     so the panel still starts off-screen. */
 }
 
 .tq-modal__bar {
@@ -1148,4 +1152,25 @@ body.is-locked {
     -webkit-line-clamp: 4;
     line-clamp: 4;
   }
+}
+
+/* ---------- 13. project cards must actually be clickable ----------
+   The reference's hover scrim `.img-overlay-full::after` sits at z-index 20 —
+   above the card's hit button — so every click on the artwork landed on a
+   decorative pseudo-element and nothing opened. The scrim is made
+   click-through, the button is raised above it, and the scrim now follows the
+   card's hover instead of the image's (the button covers the image, so
+   `.img-overlay-full:hover` would never fire again). */
+.img-overlay::after,
+.img-overlay-full::after {
+  pointer-events: none;
+}
+
+.tq-card-btn {
+  z-index: 30;
+}
+
+.portfolio-massonary-two-items:hover .img-overlay-full::after,
+.portfolio-massonary-four-items:hover .img-overlay-full::after {
+  opacity: 1;
 }
