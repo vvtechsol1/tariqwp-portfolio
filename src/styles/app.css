@@ -1174,3 +1174,220 @@ body.is-locked {
 .portfolio-massonary-four-items:hover .img-overlay-full::after {
   opacity: 1;
 }
+
+/* =========================================================================
+   14. Project detail page (/work/<slug>)
+   Replaces the slide-up modal so a case study is its own linkable page.
+   ========================================================================= */
+.tq-page {
+  min-height: 100vh;
+  background: var(--body-color);
+}
+
+.tq-page__bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 16px 0;
+  background: color-mix(in srgb, var(--body-color) 86%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--soft-line);
+}
+
+.tq-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 16px 9px 13px;
+  border-radius: 100px;
+  border: 1px solid var(--soft-line);
+  background: var(--surface-color);
+  color: var(--black-color);
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.35s var(--ease);
+}
+
+.tq-back:hover {
+  border-color: var(--orange-color);
+  color: var(--orange-color);
+}
+
+.tq-back svg {
+  transition: transform 0.35s var(--ease);
+}
+
+.tq-back:hover svg {
+  transform: rotate(180deg) translateX(3px);
+}
+
+.tq-page__hero {
+  padding: clamp(46px, 7vw, 84px) 0 clamp(26px, 3vw, 38px);
+  background: var(--light-color);
+}
+
+.tq-page__title {
+  margin-top: 14px;
+  font-size: clamp(2.2rem, 5.4vw, 4rem);
+  line-height: 1.1;
+}
+
+.tq-page__lead {
+  margin-top: 16px;
+  max-width: 62ch;
+}
+
+.tq-page__meta {
+  margin-top: clamp(26px, 3.4vw, 40px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px clamp(28px, 4vw, 52px);
+}
+
+.tq-page__meta > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tq-page__meta i {
+  font-style: normal;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--secondary-black-color);
+}
+
+.tq-page__meta b {
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--black-color);
+}
+
+.tq-page__meta .btn {
+  margin-left: auto;
+}
+
+.tq-page__cover {
+  margin: clamp(-30px, -3vw, -20px) 0 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--soft-line);
+  box-shadow: 0 30px 60px -40px var(--shadow-color);
+  position: relative;
+  z-index: 2;
+}
+
+.tq-page__cover img,
+.tq-gal__item img {
+  width: 100%;
+  display: block;
+}
+
+.tq-page__body {
+  padding: clamp(44px, 6vw, 72px) 0 clamp(30px, 4vw, 48px);
+}
+
+.tq-page__body h2,
+.tq-page__gallery h2 {
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+}
+
+.tq-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--soft-line);
+  background: var(--body-color);
+  color: var(--black-color);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.35s var(--ease);
+}
+
+.tq-link:hover {
+  border-color: var(--orange-color);
+  color: var(--orange-color);
+}
+
+.tq-page__gallery {
+  padding: 0 0 clamp(50px, 7vw, 90px);
+}
+
+.tq-gal {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 1.6vw, 22px);
+}
+
+.tq-gal__item {
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--soft-line);
+  background: var(--tint-color);
+}
+
+.tq-gal__item--wide {
+  grid-column: 1 / -1;
+}
+
+.tq-page__nav {
+  border-top: 1px solid var(--soft-line);
+  padding: clamp(26px, 3vw, 40px) 0 clamp(40px, 5vw, 64px);
+  background: var(--light-color);
+}
+
+.tq-page__nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  max-width: 46%;
+}
+
+.tq-page__nav-link i {
+  font-style: normal;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--secondary-black-color);
+}
+
+.tq-page__nav-link b {
+  font-family: 'Jost', sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-weight: 600;
+  color: var(--black-color);
+  transition: color 0.35s var(--ease);
+}
+
+.tq-page__nav-link:hover b {
+  color: var(--orange-color);
+}
+
+@media (max-width: 767.98px) {
+  .tq-gal {
+    grid-template-columns: 1fr;
+  }
+
+  .tq-page__nav-link {
+    max-width: 100%;
+  }
+
+  .tq-page__meta .btn {
+    margin-left: 0;
+  }
+}
