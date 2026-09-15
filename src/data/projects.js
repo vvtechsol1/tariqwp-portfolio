@@ -7,6 +7,24 @@ const img = (f) => `${import.meta.env.BASE_URL}projects/${f}`
 
 export const projects = [
   {
+    id: "lms",
+    slug: 'damp-mould-academy',
+    name: 'Damp & Mould Academy',
+    category: 'LMS & Membership',
+    year: '2026',
+    stage: 'Live',
+    tagline: 'Damp & Mould Academy is a WordPress course and membership site for damp and mould professionals — 5 assessed courses across 23 lessons…',
+    long: [
+      'Damp & Mould Academy is a WordPress course and membership site for damp and mould professionals — 5 assessed courses across 23 lessons, with 5 assessments and 4 assessors. LearnPress handles the courses and Paid Memberships Pro the subscriptions, with Elementor available for marketing pages, but the parts that decide who sees what are written by hand in a custom theme rather than assembled from plugin settings. Access control lives in one function: each course declares the minimum membership level that opens it, levels are ordered so a higher tier includes everything a lower one opens, and a course with nothing set stays open to any signed-in member — the safer default, so a new course appears to everyone instead of silently locking people out.',
+      'A custom REST API adds four namespaced endpoints, each with its own permission callback, typed and sanitised arguments, and nonce checks on anything that writes. A Company Administrator role carries its own capability and staff seats attached to a company account, so an employer can enrol their team. The academy changes the rules itself through a per-course access control in the editor and an "Opens at" column in the course list — no developer needed.',
+      'The front end is hand-written: a design system in plain CSS and progressive JavaScript, with no page builder in the critical path. Covered by 53 assertions across three suites — the access gate and the endpoints’ refusals, signing in over HTTP, and joining from the button through to the membership record.',
+    ],
+    tech: ['WordPress', 'LearnPress', 'Paid Memberships Pro', 'Elementor', 'Custom Theme', 'PHP', 'REST API', 'MySQL'],
+    live: null,
+    cover: img('tw_lms_cover.webp'),
+    shots: [img('tw_lms_s1.webp'), img('tw_lms_s2.webp'), img('tw_lms_s3.webp'), img('tw_lms_s4.webp'), img('tw_lms_s5.webp')],
+  },
+  {
     id: 42,
     slug: 'modern-food',
     name: 'Modern Food',
@@ -77,5 +95,5 @@ export const projects = [
 /** Fixed order, so the filter row does not reshuffle as projects come and go. */
 export const categories = [
   'All',
-  ...["WooCommerce","Elementor","Custom Theme","WordPress"].filter((c) => projects.some((p) => p.category === c)),
+  ...["LMS & Membership","WooCommerce","Elementor","Custom Theme","WordPress"].filter((c) => projects.some((p) => p.category === c)),
 ]

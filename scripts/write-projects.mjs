@@ -18,10 +18,43 @@ const all = JSON.parse(await readFile('shots/taskway-raw.json', 'utf8'))
 const isWordPress = (p) =>
   p.tech.some((t) => /^(WordPress|WooCommerce|Elementor|Gutenberg|Block Theme.*|Custom Theme)$/i.test(t))
 
-const raw = all.filter(isWordPress)
+const fromTaskway = all.filter(isWordPress)
+
+
+/**
+ * Projects that do not live in Taskway. Written in the same shape the pull
+ * produces, and merged in below, so re-running the pull never drops them.
+ */
+const EXTRA = [
+  {
+    id: 'lms',
+    slug: 'damp-mould-academy',
+    name: 'Damp & Mould Academy',
+    description:
+      'Damp & Mould Academy is a WordPress course and membership site for damp and mould professionals — 5 assessed courses across 23 lessons, with 5 assessments and 4 assessors. LearnPress handles the courses and Paid Memberships Pro the subscriptions, with Elementor available for marketing pages, but the parts that decide who sees what are written by hand in a custom theme rather than assembled from plugin settings. Access control lives in one function: each course declares the minimum membership level that opens it, levels are ordered so a higher tier includes everything a lower one opens, and a course with nothing set stays open to any signed-in member — the safer default, so a new course appears to everyone instead of silently locking people out. A custom REST API adds four namespaced endpoints, each with its own permission callback, typed and sanitised arguments, and nonce checks on anything that writes. A Company Administrator role carries its own capability and staff seats attached to a company account, so an employer can enrol their team. The academy changes the rules itself through a per-course access control in the editor and an "Opens at" column in the course list — no developer needed. The front end is hand-written: a design system in plain CSS and progressive JavaScript, with no page builder in the critical path. Covered by 53 assertions across three suites — the access gate and the endpoints’ refusals, signing in over HTTP, and joining from the button through to the membership record.',
+    tech: [
+      'WordPress',
+      'LearnPress',
+      'Paid Memberships Pro',
+      'Elementor',
+      'Custom Theme',
+      'PHP',
+      'REST API',
+      'MySQL',
+    ],
+    status: 'Live',
+    year: '2026',
+    live: null,
+    cover: 'tw_lms_cover.webp',
+    shots: ['tw_lms_s1.webp', 'tw_lms_s2.webp', 'tw_lms_s3.webp', 'tw_lms_s4.webp', 'tw_lms_s5.webp'],
+  },
+]
+
+const raw = [...EXTRA, ...fromTaskway]
 
 /** Build type — what a WordPress client actually wants to filter by. */
 const CATEGORY = {
+  'Damp & Mould Academy': 'LMS & Membership',
   'Modern Food': 'WooCommerce',
   'Myemb designs': 'WooCommerce',
   'ALYYO Clothing Co. — WordPress': 'Elementor',
@@ -83,6 +116,7 @@ const arr = (items) => `[${items.map((t) => `'${esc(t)}'`).join(', ')}]`
  * PHP work, then everything else. Within each band the Taskway order is kept.
  */
 const PINNED = [
+  'Damp & Mould Academy',
   'Modern Food',
   'ALYYO Clothing Co. — WordPress',
   'Havencrest Realty',
@@ -114,7 +148,7 @@ for (const p of ordered) {
   const shipped = /completed/i.test(p.status)
 
   entries.push(`  {
-    id: ${p.id},
+    id: ${JSON.stringify(p.id)},
     slug: '${esc(p.slug)}',
     name: '${esc(displayName(p.name))}',
     category: '${esc(category)}',
@@ -133,7 +167,7 @@ ${paragraphs(p.description)
   },`)
 }
 
-const order = ['WooCommerce', 'Elementor', 'Custom Theme', 'WordPress']
+const order = ['LMS & Membership', 'WooCommerce', 'Elementor', 'Custom Theme', 'WordPress']
 
 const file = `/**
  * Every project from the Taskway portfolio (taskway.freedev.app).
@@ -160,7 +194,7 @@ raw.forEach((p) => {
   const c = CATEGORY[p.name] ?? 'WordPress'
   counts[c] = (counts[c] ?? 0) + 1
 })
-console.log(`wrote src/data/projects.js — ${raw.length} of ${all.length} projects (WordPress only)`)
+console.log(`wrote src/data/projects.js — ${raw.length} projects (${EXTRA.length} manual + ${raw.length - EXTRA.length} of ${all.length} from Taskway)`)
 console.log(counts)
 console.log('\norder:')
 ordered.forEach((p, i) =>
